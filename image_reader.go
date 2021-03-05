@@ -179,3 +179,17 @@ func (f *File) Reader() io.Reader {
 	baseOffset := int64(f.de.ExtentLocation) * int64(sectorSize)
 	return io.NewSectionReader(f.ra, baseOffset, int64(f.de.ExtentLength))
 }
+
+type Extent struct {
+	Start  int64
+	Length int64
+}
+
+func (f *File) Extent() Extent {
+	if f.IsDir() {
+		return Extent{}
+	}
+
+	baseOffset := int64(f.de.ExtentLocation) * int64(sectorSize)
+	return Extent{baseOffset, int64(f.de.ExtentLength)}
+}
